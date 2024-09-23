@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-layout="vertical" data-topbar="light" data-sidebar="light"
+      data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable" data-body-image="none">
+<head th:replace="admin/fragments/head::head"></head>
+<body>
+
+<div id="layout-wrapper">
+    <div th:replace="admin/fragments/header::header"></div>
+    <div th:replace="admin/fragments/sidebar::sidebar"></div>
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                            <h4 class="mb-sm-0">Thêm Khuyến Mãi</h4>
+
+                            <div class="page-title-right">
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a th:href="@{/admin/promotion}">Đợt Giảm Giá</a></li>
+                                    <li class="breadcrumb-item active">Thêm Đợt Giảm Giá</li>
+                                </ol>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+                <div class="row" id="orderList">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <form id="create-form" th:action="@{/admin/add-promotion}" th:method="post"
+                                      th:object="${promotion}"
+                                      class="row">
+                                    <div class="col-sm-1"></div>
+                                    <div class="col-sm-5">
+                                        <input th:field="*{id}" type="hidden" class="form-control">
+
+                                        <label class="lb-form">Mã Đợt Giảm Giá <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <input th:field="*{ma}" type="text" class="form-control" id="ma">
+                                        <span class="text-danger" th:text="${errorCode}"
+                                              id="error-code"></span>
+                                        <br disabled>
+                                        <label class="lb-form">Tên Đợt Giảm Giá <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <input th:field="*{ten}" type="text" class="form-control" id="name">
+                                        <span class="text-danger" th:text="${errorName}"
+                                              id="error-name"></span>
+                                        <br disabled>
+                                        <label class="lb-form">Giá trị giảm <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <div class="row">
+                                            <div class="col-sm-9">
+                                                <input th:field="*{giaTriGiam}" type="number" class="form-control"
+                                                       id="reduce">
+                                                <span class="text-danger"
+                                                      th:text="${errorGiaTriGiam}" id="error-reduce"></span>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <select th:field="*{loaiGiamGia}" class="form-select">
+                                                    <option value="true">%</option>
+                                                    <option value="false">VND</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <br disabled>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <label class="lb-form">Ngày bắt đầu <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <input th:field="*{ngayBatDau}" type="date"
+                                               class="form-control start-date" id="start-date-input"/>
+                                        <span class="text-danger"
+                                              th:text="${errorNgayBatDau}" id="error-start-date"></span>
+                                        <br disabled>
+                                        <label class="lb-form">Ngày kết thúc <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <input th:field="*{ngayKetThuc}" type="date"
+                                               class="form-control end-date" id="end-date-input"/>
+                                        <span class="text-danger"
+                                              th:text="${errorNgayKetThuc}" id="error-end-date"></span>
+                                        <br disabled>
+                                        <label class="lb-form">Giá Trị Đơn Hàng Áp Dụng <span
+                                                class="text-danger fw-bold">*</span></label>
+                                        <input th:field="*{giaTriDonHang}" type="number" class="form-control">
+                                        <span class="text-danger"
+                                              th:text="${errorBill}" id="error-bill"></span>
+                                        <br disabled>
+                                        <br disabled="true">
+                                        <div class="d-flex justify-content-end align-items-end">
+                                            <button type="button" class="btn btn-success w-25"
+                                                    onclick="showConfirmPopup()">Thêm mới
+                                            </button>
+                                            <span style="padding: 0 8px;" disabled></span>
+                                            <a type="button" class="btn btn-danger w-sm" href="/admin/promotion"> Quay Lại</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.10.5/sweetalert2.all.min.js"></script>
+<script th:inline="javascript">
+    let startDate = [[ ${startDate}]] * null;
+    let endDate = [[ ${endDate}]] * null;
+
+    document.querySelector('.start-date').value = startDate;
+    document.querySelector('.end-date').value = endDate;
+
+
+</script>
+
+<script th:if="${errorDuplicate != null}">
+    console.log(message);
+    swal.fire({
+        icon: "error",
+        title: "Thông báo",
+        text: message + "!",
+        confirmButtonText: "OK"
+    })
+</script>
+
+<script>
+
+    function showConfirmPopup() {
+        swal.fire({
+            icon: 'question',
+            title: "Bạn có muốn lưu?",
+            showCancelButton: true,
+            confirmButtonText: "Có",
+            cancelButtonText: 'Không'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                document.getElementById('create-form').submit();
+            }
+        });
+    }
+</script>
+
+<div th:replace="admin/fragments/themeSettings::themeSettings"></div>
+<div th:replace="admin/fragments/script::script"></div>
+<div th:if="${promotionCreated}">
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: 'Đợt giảm giá đã được tạo thành công!'
+        }).then(() => {
+            window.location.href = '/admin/promotion';
+        });
+    </script>
+</div>
+</body>
+</html>
